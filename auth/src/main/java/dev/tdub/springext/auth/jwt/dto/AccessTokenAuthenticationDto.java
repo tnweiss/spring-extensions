@@ -4,10 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import com.ora.web.common.dto.user.UserPrincipalDto;
-
 import dev.tdub.springext.auth.Authentication;
 import dev.tdub.springext.auth.UserPrincipal;
+import dev.tdub.springext.auth.UserPrincipalDto;
 import dev.tdub.springext.auth.jwt.AccessTokenClaims;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +14,12 @@ import org.springframework.security.core.GrantedAuthority;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class OraAccessTokenAuthenticationDto implements Authentication {
+public class AccessTokenAuthenticationDto implements Authentication {
   private final UserPrincipal principal;
   private final String accessToken;
   private final AccessTokenClaims accessTokenClaims;
 
-  public OraAccessTokenAuthenticationDto(AccessTokenClaims claims, String accessToken) {
+  public AccessTokenAuthenticationDto(AccessTokenClaims claims, String accessToken) {
     this.principal = new UserPrincipalDto(claims.getSub(), claims.getSessionId());
     this.accessToken = accessToken;
     this.accessTokenClaims = claims;

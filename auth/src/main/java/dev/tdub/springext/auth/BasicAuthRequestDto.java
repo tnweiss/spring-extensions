@@ -1,6 +1,5 @@
-package dev.tdub.springext.auth.dto;
+package dev.tdub.springext.auth;
 
-import dev.tdub.springext.auth.BasicAuthRequest;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

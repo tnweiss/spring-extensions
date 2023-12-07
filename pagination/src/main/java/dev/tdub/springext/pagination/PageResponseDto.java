@@ -1,11 +1,11 @@
-package dev.tylerweiss.springext.pagination;
+package dev.tdub.springext.pagination;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import dev.tylerweiss.springext.error.exceptions.InternalServerException;
+import dev.tdub.springext.error.exceptions.InternalServerException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

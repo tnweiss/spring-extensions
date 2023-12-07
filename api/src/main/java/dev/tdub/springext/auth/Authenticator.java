@@ -1,11 +1,8 @@
-package com.ora.web.common.security;
-
-import dev.tdub.springext.auth.Authentication;
-import dev.tdub.springext.error.exceptions.AuthenticationException;
+package dev.tdub.springext.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-public interface OraAuthenticator {
+public interface Authenticator {
   boolean canAuthenticate(HttpServletRequest request);
-  Authentication authenticate(HttpServletRequest request) throws AuthenticationException;
+  Authentication authenticate(HttpServletRequest request);
 }

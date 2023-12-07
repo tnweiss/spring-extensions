@@ -1,4 +1,4 @@
-package com.ora.web.common.dto.user;
+package dev.tdub.springext.auth;
 
 import java.util.UUID;
 

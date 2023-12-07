@@ -17,14 +17,14 @@ import org.springframework.data.domain.Sort;
 
 @Getter
 @EqualsAndHashCode
-public class PageOrder {
+public class PageOrderDto implements PageOrder {
   private static final Predicate<String> SORT_FORMAT =
       Pattern.compile("^[a-zA-Z0-9]+,(ASC|DESC)$").asMatchPredicate();
 
   private final String column;
   private final PageOrderDirection direction;
 
-  public PageOrder(String sortString) {
+  public PageOrderDto(String sortString) {
     if (!SORT_FORMAT.test(sortString)) {
       throw new ClientException("Sort must be formatted as '<COLUMN>,(ASC || DESC)'. Not '%s'".formatted(sortString));
     }

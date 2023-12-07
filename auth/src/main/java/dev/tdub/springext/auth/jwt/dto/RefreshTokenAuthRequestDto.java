@@ -1,4 +1,4 @@
-package dev.tdub.springext.auth.dto;
+package dev.tdub.springext.auth.jwt.dto;
 
 import dev.tdub.springext.auth.jwt.RefreshTokenAuthRequest;
 import lombok.Builder;

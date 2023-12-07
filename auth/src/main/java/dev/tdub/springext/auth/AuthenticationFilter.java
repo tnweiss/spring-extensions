@@ -1,15 +1,14 @@
-package com.ora.web.common.security;
+package dev.tdub.springext.auth;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.ora.web.common.serdes.Json;
-
-import dev.tdub.springext.error.dto.ErrorResponseDto;
 import dev.tdub.springext.error.RequestIdSupplier;
+import dev.tdub.springext.error.dto.ErrorResponseDto;
 import dev.tdub.springext.error.exceptions.AuthenticationException;
 import dev.tdub.springext.error.exceptions.InternalServerException;
+import dev.tdub.springext.util.Json;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,11 +24,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
-public class OraAuthenticationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter {
   public static final String MDC_RID = "RID";
   public static final String MDC_UID = "UID";
 
-  private final List<OraAuthenticator> authenticators;
+  private final List<Authenticator> authenticators;
   private final RequestIdSupplier ridSupplier;
 
   @Override

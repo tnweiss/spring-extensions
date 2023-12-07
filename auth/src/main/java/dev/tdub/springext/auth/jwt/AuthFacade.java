@@ -1,58 +1,60 @@
-package dev.tdub.springext.auth;
+package dev.tdub.springext.auth.jwt;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import com.ora.web.common.dto.auth.AuthResponseDto;
-import com.ora.web.common.dto.auth.RefreshTokenClaimsDto;
-import com.ora.web.common.dto.logging.AuditAction;
-import com.ora.web.common.dto.logging.AuditResource;
-import com.ora.web.common.dto.network.Network;
-import com.ora.web.common.dto.session.Session;
-import com.ora.web.common.dto.user.User;
-import com.ora.web.service.AuthService;
-import com.ora.web.service.NetworkService;
-import com.ora.web.service.SessionService;
-import com.ora.web.service.UserService;
-
-import dev.tdub.springext.auth.jwt.RefreshTokenAuthRequest;
-import lombok.CustomLog;
+import dev.tdub.springext.auth.BasicAuthRequest;
+import dev.tdub.springext.auth.Network;
+import dev.tdub.springext.auth.UserPrincipal;
+import dev.tdub.springext.auth.service.NetworkAuthService;
+import dev.tdub.springext.auth.service.SessionAuthService;
+import dev.tdub.springext.auth.service.UserAuthService;
+import dev.tdub.springext.error.exceptions.ClientException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import static com.ora.web.common.serdes.Json.json;
+import static dev.tdub.springext.util.Json.json;
 
+@ConditionalOnProperty(
+    value = "springext.auth.authenticators.jwt.enabled",
+    havingValue = "true"
+)
+@Log4j2
 @Component
-@CustomLog
 @RequiredArgsConstructor
 public class AuthFacade {
-  private final UserService userService;
-  private final NetworkService networkService;
-  private final SessionService sessionService;
   private final AuthService authService;
+  private final UserAuthService userAuthService;
+  private final NetworkAuthService networkAuthService;
+  private final SessionAuthService sessionAuthService;
 
-  public AuthResponseDto authenticate(BasicAuthRequest request, String remoteAddress) {
+  public JwtAuthResponse authenticate(BasicAuthRequest request, String remoteAddress) {
     log.info("Authenticating basic credentials {}", () -> json(request));
-    User user = userService.authenticate(request.getUsername(), request.getPassword());
-    Optional<Network> network = networkService.get(remoteAddress);
-    Session session = sessionService.create(user, network.orElse(null), remoteAddress);
-    AuthResponseDto response = authService.createTokens(session);
-    log.audit(AuditAction.CREATE, AuditResource.SESSION, json(request), session.getSessionId());
+    Long userId = userAuthService.authenticate(request.getUsername(), request.getPassword());
+    Optional<Network> network = networkAuthService.get(remoteAddress);
+    JwtAuthSession jwtAuthSession = sessionAuthService.create(userId, network.orElse(null), remoteAddress);
+    JwtAuthResponse response = authService.createTokens(jwtAuthSession);
+    log.debug("Authenticated user {} in session {}", userId, jwtAuthSession.getSessionId());
     return response;
   }
 
-  public AuthResponseDto authenticate(RefreshTokenAuthRequest request) {
+  public JwtAuthResponse authenticate(RefreshTokenAuthRequest request) {
     log.info("Authenticating refresh token credentials {}", () -> json(request));
-    RefreshTokenClaimsDto claims = authService.verifyRefreshToken(request.getRefreshToken());
-    userService.requireActiveUser(claims.getSub());
-    Session session = sessionService.updateRefreshTokenId(claims.getSessionId(), claims.getRefreshId(), UUID.randomUUID());
-    AuthResponseDto response = authService.createTokens(session);
-    log.audit(AuditAction.UPDATE, AuditResource.SESSION, request, null);
+    RefreshTokenClaims claims = authService.verifyRefreshToken(request.getRefreshToken());
+    userAuthService.requireActiveUser(claims.getSub());
+    JwtAuthSession jwtAuthSession = sessionAuthService
+        .updateRefreshTokenId(claims.getSessionId(), claims.getRefreshId(), UUID.randomUUID());
+    JwtAuthResponse response = authService.createTokens(jwtAuthSession);
+    log.debug("Updated user {} session {} to {}", claims.getSub(), claims.getSessionId(), jwtAuthSession.getSessionId());
     return response;
   }
 
   public void logout(UserPrincipal principal) {
     log.info("Invalidating session {}", principal::getSessionId);
-    sessionService.delete(principal.getSessionId());
-    log.audit(AuditAction.DELETE, AuditResource.SESSION, principal.getSessionId(), null);
+    if (principal.getSessionId() == null) {
+      throw new ClientException("Invalid Credentials.");
+    }
+    sessionAuthService.delete(principal.getSessionId());
   }
 }

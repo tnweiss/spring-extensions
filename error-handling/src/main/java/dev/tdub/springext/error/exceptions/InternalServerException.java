@@ -1,4 +1,4 @@
-package dev.tylerweiss.springext.error.exceptions;
+package dev.tdub.springext.error.exceptions;
 
 public class InternalServerException extends RuntimeException {
   public InternalServerException(Exception ex) {

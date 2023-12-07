@@ -1,4 +1,4 @@
-package com.ora.web.common;
+package dev.tdub.springext.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

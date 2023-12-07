@@ -1,4 +1,4 @@
-package dev.tylerweiss.springext.error;
+package dev.tdub.springext.error;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -7,16 +7,14 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
-import dev.tylerweiss.springext.error.dto.ErrorLogger;
-import dev.tylerweiss.springext.error.dto.ErrorResponseDto;
-import dev.tylerweiss.springext.error.dto.RequestIdSupplier;
-import dev.tylerweiss.springext.error.exceptions.AuthenticationException;
-import dev.tylerweiss.springext.error.exceptions.AuthorizationException;
-import dev.tylerweiss.springext.error.exceptions.ClientException;
-import dev.tylerweiss.springext.error.exceptions.InternalServerException;
-import dev.tylerweiss.springext.error.dto.ErrorResponse;
-import dev.tylerweiss.springext.error.exceptions.NotFoundException;
+import dev.tdub.springext.error.dto.ErrorResponseDto;
+import dev.tdub.springext.error.exceptions.AuthenticationException;
+import dev.tdub.springext.error.exceptions.AuthorizationException;
+import dev.tdub.springext.error.exceptions.ClientException;
+import dev.tdub.springext.error.exceptions.InternalServerException;
+import dev.tdub.springext.error.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -33,43 +31,43 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+@Log4j2
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ErrorHandlerController extends ResponseEntityExceptionHandler {
-  private final ErrorLogger log;
   private final RequestIdSupplier ridSupplier;
 
   @ExceptionHandler(value = {AuthenticationException.class})
   public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
-    log.clientError(ex);
+    log.debug("Client error.", ex);
     return ResponseEntity.status(UNAUTHORIZED)
         .body(new ErrorResponseDto("Invalid Credentials.", ridSupplier.get()));
   }
 
   @ExceptionHandler(value = {AuthorizationException.class})
   public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException ex) {
-    log.clientError(ex);
+    log.debug("Client error.", ex);
     return ResponseEntity.status(FORBIDDEN)
         .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
   }
 
   @ExceptionHandler(value = {ClientException.class})
   public ResponseEntity<ErrorResponse> handleClientException(ClientException ex) {
-    log.clientError(ex);
+    log.debug("Client error.", ex);
     return ResponseEntity.status(BAD_REQUEST)
         .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
   }
 
   @ExceptionHandler(value = {InternalServerException.class})
   public ResponseEntity<ErrorResponse> handleInternalServerException(InternalServerException ex) {
-    log.serverError(ex);
+    log.error("Server error.", ex);
     return ResponseEntity.status(INTERNAL_SERVER_ERROR)
         .body(new ErrorResponseDto("Internal Error. Please contact the ora team", ridSupplier.get()));
   }
 
   @ExceptionHandler(value = {NotFoundException.class})
   public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-    log.clientError(ex);
+    log.debug("Client error.", ex);
     return ResponseEntity.status(NOT_FOUND)
         .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
   }
@@ -77,7 +75,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
   @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
       HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-    log.clientError(ex.getCause());
+    log.debug("Client error.", ex.getCause());
 
     String message = "Invalid request, check the documentation for more details";
     if (ex.getCause() instanceof MismatchedInputException) {
@@ -96,7 +94,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-    log.clientError(ex);
+    log.debug("Client error.", ex);
     String error = ex.getBindingResult()
         .getAllErrors()
         .stream()

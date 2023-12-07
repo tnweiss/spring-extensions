@@ -1,6 +1,8 @@
-package dev.tylerweiss.springext.error.dto;
+package dev.tdub.springext.error.dto;
 
 import java.time.Instant;
+
+import dev.tdub.springext.error.ErrorResponse;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

@@ -1,8 +1,7 @@
-package dev.tdub.springext.auth;
+package dev.tdub.springext.auth.jwt;
 
 import java.util.UUID;
 
-import dev.tdub.springext.auth.jwt.JwtAuthSession;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

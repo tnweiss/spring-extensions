@@ -1,4 +1,4 @@
-package com.ora.web.common.dto.network;
+package dev.tdub.springext.auth;
 
 import java.net.InetAddress;
 
