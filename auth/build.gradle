@@ -19,6 +19,7 @@ configurations {
 dependencies {
     implementation project(':api')
     implementation project(':util')
+    implementation project(':audit')
     implementation project(':error-handling')
 
     // JWT
