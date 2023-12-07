@@ -25,17 +25,10 @@ jobs:
           distribution: 'adopt'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+      - name: Make gradlew executable
+        run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew publishAllPublicationsToSpringExtensionsRepository
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE: true
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
