@@ -1,15 +1,11 @@
 package dev.tdub.springext.auth.jwt;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import dev.tdub.springext.audit.AuditAction;
-import dev.tdub.springext.audit.AuditLog;
 import dev.tdub.springext.auth.BasicAuthRequest;
 import dev.tdub.springext.auth.Network;
 import dev.tdub.springext.auth.UserPrincipal;
-import dev.tdub.springext.auth.UserPrincipalDto;
 import dev.tdub.springext.auth.service.NetworkAuthService;
 import dev.tdub.springext.auth.service.SessionAuthService;
 import dev.tdub.springext.auth.service.UserAuthService;
@@ -28,13 +24,10 @@ import static dev.tdub.springext.util.Json.json;
 @Component
 @RequiredArgsConstructor
 public class AuthFacade {
-  private static final String AUDIT_RESOURCE = "session";
-
   private final AuthService authService;
   private final UserAuthService userAuthService;
   private final NetworkAuthService networkAuthService;
   private final SessionAuthService sessionAuthService;
-  private final AuditLog auditLog;
 
   public JwtAuthResponse authenticate(BasicAuthRequest request, String remoteAddress) {
     log.info("Authenticating basic credentials {}", () -> json(request));
@@ -42,7 +35,7 @@ public class AuthFacade {
     Optional<Network> network = networkAuthService.get(remoteAddress);
     JwtAuthSession jwtAuthSession = sessionAuthService.create(userId, network.orElse(null), remoteAddress);
     JwtAuthResponse response = authService.createTokens(jwtAuthSession);
-    auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.CREATE, AUDIT_RESOURCE, Map.of("ip", remoteAddress));
+    log.debug("Authenticated user {} in session {}", userId, jwtAuthSession.getSessionId());
     return response;
   }
 
@@ -53,7 +46,6 @@ public class AuthFacade {
     JwtAuthSession jwtAuthSession = sessionAuthService
         .updateRefreshTokenId(claims.getSessionId(), claims.getRefreshId(), UUID.randomUUID());
     JwtAuthResponse response = authService.createTokens(jwtAuthSession);
-    auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.UPDATE, AUDIT_RESOURCE);
     log.debug("Updated user {} session {} to {}", claims.getSub(), claims.getSessionId(), jwtAuthSession.getSessionId());
     return response;
   }
@@ -64,6 +56,5 @@ public class AuthFacade {
       throw new ClientException("Invalid Credentials.");
     }
     sessionAuthService.delete(principal.getSessionId());
-    auditLog.write(principal, AuditAction.DELETE, AUDIT_RESOURCE);
   }
 }
