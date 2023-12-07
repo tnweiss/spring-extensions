@@ -4,7 +4,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId = group
             artifactId = 'auth'
-            version = "0.0.1"
+            version = version
             from components.java
         }
     }
