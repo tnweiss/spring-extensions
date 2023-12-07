@@ -22,9 +22,9 @@ dependencies {
     implementation project(':error-handling')
 
     // JWT
-    implementation 'io.jsonwebtoken:jjwt-api'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl'
-    runtimeOnly 'io.jsonwebtoken:jjwt-orgjson'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-orgjson:0.12.3'
 
     compileOnly 'org.apache.logging.log4j:log4j-api'
     compileOnly 'org.slf4j:slf4j-api'
