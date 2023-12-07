@@ -1,7 +1,6 @@
 package dev.tdub.springext.lookup;
 
-import com.ora.web.common.dto.user.UserPrincipal;
-
+import dev.tdub.springext.auth.UserPrincipal;
 import dev.tdub.springext.pagination.PageResponse;
 import dev.tdub.springext.pagination.SortablePageRequest;
 

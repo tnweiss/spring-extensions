@@ -1,9 +1,8 @@
-package com.ora.web.common.dto.user;
+package dev.tdub.springext.auth;
 
 import java.util.Collection;
 import java.util.UUID;
 
-import dev.tdub.springext.auth.UserPrincipal;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package dev.tylerweiss.springext.error.exceptions;
+package dev.tdub.springext.error.exceptions;
 
 public class ClientException extends RuntimeException {
   public ClientException(Exception ex) {

@@ -1,4 +1,4 @@
-package dev.tylerweiss.springext.pagination;
+package dev.tdub.springext.pagination;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class SortablePageRequestDto extends PageRequestDto implements SortablePa
       this.sort = Set.of();
     } else {
       this.sort = sort.stream()
-          .map(PageOrder::new)
+          .map(PageOrderDto::new)
           .collect(Collectors.toSet());
     }
   }

@@ -1,0 +1,40 @@
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'auth'
+            version = version
+            from components.java
+        }
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':util')
+    implementation project(':error-handling')
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-orgjson:0.12.3'
+
+    compileOnly 'org.apache.logging.log4j:log4j-api'
+    compileOnly 'org.slf4j:slf4j-api'
+    compileOnly 'org.springframework.security:spring-security-core'
+    compileOnly 'org.springframework.security:spring-security-config'
+    compileOnly 'org.springframework.security:spring-security-web'
+    compileOnly 'org.springframework:spring-web'
+    compileOnly 'org.springframework:spring-webmvc'
+    compileOnly 'org.apache.tomcat.embed:tomcat-embed-core'
+    compileOnly 'org.springframework.boot:spring-boot-autoconfigure'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+}

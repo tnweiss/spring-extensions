@@ -1,2 +1,8 @@
-package dev.tdub.springext.auth.defaul;public interface DefaultUserPrincipalSupplier {
+package dev.tdub.springext.auth.defaul;
+
+import java.util.function.Supplier;
+
+import dev.tdub.springext.auth.UserPrincipal;
+
+public interface DefaultUserPrincipalSupplier extends Supplier<UserPrincipal> {
 }

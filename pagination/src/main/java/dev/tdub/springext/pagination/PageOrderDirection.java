@@ -1,6 +1,6 @@
-package dev.tylerweiss.springext.pagination;
+package dev.tdub.springext.pagination;
 
-import dev.tylerweiss.springext.error.exceptions.ClientException;
+import dev.tdub.springext.error.exceptions.ClientException;
 
 public enum PageOrderDirection {
   ASC,

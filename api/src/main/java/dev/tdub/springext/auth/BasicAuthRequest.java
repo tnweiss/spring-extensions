@@ -1,4 +1,4 @@
-package dev.tdub.springext.auth.jwt;
+package dev.tdub.springext.auth;
 
 public interface BasicAuthRequest {
   String getUsername();

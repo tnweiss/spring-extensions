@@ -1,7 +1,5 @@
-package com.ora.web.common.security.jwt;
-
-import com.ora.web.common.dto.auth.AccessTokenClaimsDto;
+package dev.tdub.springext.auth.jwt;
 
 public interface AccessTokenGenerator {
-  String create(AccessTokenClaimsDto claims);
+  String create(AccessTokenClaims claims);
 }

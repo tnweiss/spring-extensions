@@ -1,15 +1,8 @@
-package dev.tdub.springext.auth.authenticator;
-
-import java.time.Instant;
-import java.util.Optional;
-
-import com.ora.web.common.dataaccess.user.UserDao;
-import com.ora.web.common.dataaccess.user.UserRepo;
-import com.ora.web.common.dto.auth.OraDefaultUserAuthenticationDto;
-import com.ora.web.common.dto.user.User;
-import com.ora.web.common.security.OraAuthenticator;
+package dev.tdub.springext.auth.defaul;
 
 import dev.tdub.springext.auth.Authentication;
+import dev.tdub.springext.auth.Authenticator;
+import dev.tdub.springext.auth.UserPrincipal;
 import dev.tdub.springext.error.exceptions.AuthenticationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +11,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Order(1000)
-@ConditionalOnProperty(value = "ora.security.authentication.required", havingValue = "false")
+@ConditionalOnProperty(
+    value = "springext.auth.authenticators.default.enabled",
+    havingValue = "true"
+)
 @Component
 @RequiredArgsConstructor
-public class DefaultUserAuthFilter implements OraAuthenticator {
-  private static final String EMAIL = "default.user@ora.com";
-
-  private final UserRepo userRepo;
+public class DefaultUserAuthFilter implements Authenticator {
+  private final DefaultUserPrincipalSupplier defaultUserPrincipalSupplier;
 
   @Override
   public boolean canAuthenticate(HttpServletRequest request) {
@@ -33,26 +27,7 @@ public class DefaultUserAuthFilter implements OraAuthenticator {
 
   @Override
   public Authentication authenticate(HttpServletRequest request) throws AuthenticationException {
-    User defaultUser = createDefaultUser();
-    return new OraDefaultUserAuthenticationDto(defaultUser);
-  }
-
-  private User createDefaultUser() {
-    Optional<UserDao> user = userRepo.findByEmail(EMAIL);
-    if (user.isPresent()) {
-      return user.get().toUser();
-    }
-
-    UserDao defaultUser = new UserDao();
-    defaultUser.setFirstName("Default");
-    defaultUser.setLastName("User");
-    defaultUser.setActive(false);
-    defaultUser.setAdmin(true);
-    defaultUser.setEmail(EMAIL);
-    defaultUser.setPassword("");
-    defaultUser.setCreatedAt(Instant.now());
-    defaultUser.setLastUpdatedAt(Instant.now());
-
-    return userRepo.save(defaultUser).toUser();
+    UserPrincipal principal = defaultUserPrincipalSupplier.get();
+    return new DefaultUserAuthenticationDto(principal);
   }
 }

@@ -1,4 +1,4 @@
-package dev.tylerweiss.springext.pagination;
+package dev.tdub.springext.pagination;
 
 import java.util.Optional;
 

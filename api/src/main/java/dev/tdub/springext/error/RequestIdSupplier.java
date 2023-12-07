@@ -1,4 +1,4 @@
-package dev.tdub.springext.error.dto;
+package dev.tdub.springext.error;
 
 import java.util.function.Supplier;
 

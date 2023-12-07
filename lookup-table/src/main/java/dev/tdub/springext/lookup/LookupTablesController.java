@@ -1,12 +1,8 @@
-package com.ora.web.controller;
+package dev.tdub.springext.lookup;
 
-import java.util.List;
-
-import com.ora.web.common.dto.auth.OraAuthentication;
+import dev.tdub.springext.auth.Authentication;
 import dev.tdub.springext.pagination.PageResponse;
 import dev.tdub.springext.pagination.SortablePageRequestDto;
-import com.ora.web.facade.LookupTablesFacade;
-
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +22,7 @@ public class LookupTablesController {
   }
 
   @GetMapping("/{table}")
-  public PageResponse<String> getTable(OraAuthentication authentication,
+  public PageResponse<String> getTable(Authentication authentication,
                                        @PathVariable("table") String table,
                                        String filter,
                                        @ParameterObject SortablePageRequestDto pagination) {

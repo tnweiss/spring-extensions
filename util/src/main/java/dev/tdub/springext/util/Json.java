@@ -1,17 +1,14 @@
-package com.ora.web.common.serdes;
+package dev.tdub.springext.util;
 
 import java.text.DateFormat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import dev.tdub.springext.error.exceptions.InternalServerException;
 
+import dev.tdub.springext.error.exceptions.InternalServerException;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 public class Json {
-//  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-//      .registerModule(new JavaTimeModule());
   private static final ObjectMapper OBJECT_MAPPER = new Jackson2ObjectMapperBuilder()
     .dateFormat(DateFormat.getInstance())
     .build();

@@ -1,2 +1,5 @@
-package dev.tdub.springext.auth;public interface UserRoleService {
+package dev.tdub.springext.auth;
+
+public interface UserRoleService {
+  boolean isAdmin(UserPrincipal principal);
 }

@@ -1,6 +1,6 @@
 package dev.tdub.springext.auth.jwt;
 
-public interface AuthResponse {
+public interface JwtAuthResponse {
   String getAccessToken();
   String getRefreshToken();
 }

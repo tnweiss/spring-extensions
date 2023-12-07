@@ -1,0 +1,23 @@
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = 'error-handling'
+            version = version
+            from components.java
+        }
+    }
+}
+
+dependencies {
+    implementation project(':api')
+
+    compileOnly 'org.slf4j:slf4j-api'
+    compileOnly 'org.springframework.security:spring-security-core'
+    compileOnly 'org.springframework:spring-web'
+    compileOnly 'org.springframework:spring-webmvc'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind'
+    compileOnly 'org.springframework:spring-context'
+    compileOnly 'org.apache.logging.log4j:log4j-api'
+}
