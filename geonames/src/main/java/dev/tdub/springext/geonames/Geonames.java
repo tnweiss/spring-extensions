@@ -3,7 +3,6 @@ package dev.tdub.springext.geonames;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,14 +44,14 @@ public class Geonames {
     Map<String, String> subdivisionCodes = loadSubdivisions();
     List<GeonameRecord> postalCodeRecords = loadPostalCodes();
 
-    Map<String, Country.CountryBuilder> builder = new HashMap<>();
+    Map<String, CountryDto.CountryBuilder> builder = new HashMap<>();
     for (GeonameRecord record: postalCodeRecords) {
       String countryName = countryCodes.get(record.getCountryCode());
       String subdivisionName = subdivisionCodes.get(record.getSubdivisionCode());
       String postalCode = record.getPostalCode();
 
       if (!builder.containsKey(record.getCountryCode())) {
-        builder.put(record.getCountryCode(), new Country.CountryBuilder(record.getCountryCode(), countryName));
+        builder.put(record.getCountryCode(), new CountryDto.CountryBuilder(record.getCountryCode(), countryName));
       }
       builder.get(record.getCountryCode()).add(subdivisionName, record.getSubdivisionCode(), postalCode);
     }

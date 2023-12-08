@@ -14,14 +14,14 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @EqualsAndHashCode
-public class Subdivision {
-  private final Country country;
+public class SubdivisionDto implements Subdivision {
+  private final CountryDto country;
   private final String name;
   private final String alpha2Code;
   @EqualsAndHashCode.Exclude
   private final Set<PostalCode> postalCodes;
 
-  Subdivision(Country country, SubdivisionBuilder builder) {
+  SubdivisionDto(CountryDto country, SubdivisionBuilder builder) {
     this.country = country;
     this.name = builder.name;
     this.alpha2Code = builder.alpha2Code;
@@ -46,7 +46,7 @@ public class Subdivision {
   static class SubdivisionBuilder {
     private final String name;
     private final String alpha2Code;
-    private final List<PostalCode.PostalCodeBuilder> postalCodes;
+    private final List<PostalCodeDto.PostalCodeBuilder> postalCodes;
 
     public SubdivisionBuilder (String alpha2Code, String name) {
       this.name = name;
@@ -55,11 +55,11 @@ public class Subdivision {
     }
 
     public void add(String postalCode) {
-      postalCodes.add(new PostalCode.PostalCodeBuilder(postalCode));
+      postalCodes.add(new PostalCodeDto.PostalCodeBuilder(postalCode));
     }
 
-    public Subdivision build(Country country) {
-      return new Subdivision(country, this);
+    public SubdivisionDto build(CountryDto country) {
+      return new SubdivisionDto(country, this);
     }
   }
 }

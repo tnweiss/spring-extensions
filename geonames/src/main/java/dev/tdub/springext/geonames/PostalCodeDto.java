@@ -9,11 +9,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @EqualsAndHashCode
-public class PostalCode {
-  private final Subdivision subdivision;
+public class PostalCodeDto implements PostalCode {
+  private final SubdivisionDto subdivision;
   private final String code;
 
-  PostalCode(Subdivision city, PostalCodeBuilder builder) {
+  PostalCodeDto(SubdivisionDto city, PostalCodeBuilder builder) {
     this.subdivision = city;
     this.code = builder.getCode();
   }
@@ -34,8 +34,8 @@ public class PostalCode {
   static class PostalCodeBuilder {
     private final String code;
 
-    public PostalCode build(Subdivision subdivision) {
-      return new PostalCode(subdivision, this);
+    public PostalCodeDto build(SubdivisionDto subdivision) {
+      return new PostalCodeDto(subdivision, this);
     }
   }
 }
