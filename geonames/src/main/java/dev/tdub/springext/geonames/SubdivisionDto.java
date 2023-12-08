@@ -30,9 +30,20 @@ public class SubdivisionDto implements Subdivision {
         .collect(Collectors.toSet());
   }
 
+  SubdivisionDto(String alpha2Code) {
+    this.country = null;
+    this.name = "UNKNOWN";
+    this.alpha2Code = alpha2Code;
+    this.postalCodes = Set.of();
+  }
+
   @JsonCreator
   public static Subdivision fromAlpha2Code(String alpha2Code) {
-    return Geonames.getSubdivision(alpha2Code);
+    if (alpha2Code == null) {
+      return null;
+    }
+    return Geonames.getSubdivision(alpha2Code)
+        .orElse(new SubdivisionDto(alpha2Code));
   }
 
   @JsonValue

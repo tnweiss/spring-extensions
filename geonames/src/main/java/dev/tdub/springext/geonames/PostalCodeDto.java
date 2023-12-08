@@ -18,9 +18,14 @@ public class PostalCodeDto implements PostalCode {
     this.code = builder.getCode();
   }
 
+  PostalCodeDto(String code) {
+    this.subdivision = null;
+    this.code = code;
+  }
+
   @JsonCreator
   public static PostalCode fromPostalCode(String postalCode) {
-    return Geonames.getPostalCode(postalCode);
+    return Geonames.getPostalCode(postalCode).orElse(new PostalCodeDto(postalCode));
   }
 
   @JsonValue

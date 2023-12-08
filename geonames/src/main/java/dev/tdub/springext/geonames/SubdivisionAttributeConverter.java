@@ -1,5 +1,7 @@
 package dev.tdub.springext.geonames;
 
+import java.util.Optional;
+
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
@@ -7,11 +9,13 @@ import jakarta.persistence.Converter;
 public class SubdivisionAttributeConverter implements AttributeConverter<Subdivision, String> {
   @Override
   public String convertToDatabaseColumn(Subdivision attribute) {
-    return attribute.getAlpha2Code();
+    return Optional.ofNullable(attribute)
+        .map(Subdivision::getAlpha2Code)
+        .orElse(null);
   }
 
   @Override
   public Subdivision convertToEntityAttribute(String dbData) {
-    return Geonames.getSubdivision(dbData);
+    return SubdivisionDto.fromAlpha2Code(dbData);
   }
 }

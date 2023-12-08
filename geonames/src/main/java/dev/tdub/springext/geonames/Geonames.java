@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,27 +75,26 @@ public class Geonames {
         + postalCodes.size() + " postal codes");
   }
 
-  public static Country getCountry(String alpha2Code) {
-    return Optional.ofNullable(countries.get(alpha2Code))
-        .orElseThrow(() -> new IllegalArgumentException("Invalid country code: " + alpha2Code));
+  public static Optional<Country> getCountry(String alpha2Code) {
+    return Optional.ofNullable(countries.get(alpha2Code));
   }
 
   public static Collection<Country> getCountries() {
     return countries.values();
   }
 
-  public static Subdivision getSubdivision(String alpha2Code) {
-    return Optional.ofNullable(subdivisions.get(alpha2Code))
-        .orElseThrow(() -> new IllegalArgumentException("Invalid subdivision code: " + alpha2Code));
+  public static Optional<Subdivision> getSubdivision(String alpha2Code) {
+    return Optional.ofNullable(subdivisions.get(alpha2Code));
   }
 
   public static Collection<Subdivision> getSubdivisions(String countryCode) {
-    return getCountry(countryCode).getSubdivisions();
+    return getCountry(countryCode)
+        .map(Country::getSubdivisions)
+        .orElse(Set.of());
   }
 
-  public static PostalCode getPostalCode(String postalCode) {
-    return Optional.ofNullable(postalCodes.get(postalCode))
-        .orElseThrow(() -> new IllegalArgumentException("Invalid postal code: " + postalCode));
+  public static Optional<PostalCode> getPostalCode(String postalCode) {
+    return Optional.ofNullable(postalCodes.get(postalCode));
   }
 
   private static Map<String, String> loadCountries() {

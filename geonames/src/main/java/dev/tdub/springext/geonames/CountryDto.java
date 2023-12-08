@@ -28,9 +28,20 @@ public class CountryDto implements Country {
         .collect(Collectors.toSet());
   }
 
+  private CountryDto(String alpha2Code) {
+    this.alpha2Code = alpha2Code;
+    this.name = "UNKNOWN";
+    this.subdivisions = Set.of();
+  }
+
   @JsonCreator
   public static Country fromAlpha2Code(String alpha2Code) {
-    return Geonames.getCountry(alpha2Code);
+    if (alpha2Code == null) {
+      return null;
+    }
+
+    return Geonames.getCountry(alpha2Code)
+        .orElse(new CountryDto(alpha2Code));
   }
 
   @JsonValue
