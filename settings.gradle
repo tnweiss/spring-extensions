@@ -7,3 +7,5 @@ include 'lookup-table'
 include 'auth'
 include 'util'
 include 'audit'
+include 'geonames'
+
