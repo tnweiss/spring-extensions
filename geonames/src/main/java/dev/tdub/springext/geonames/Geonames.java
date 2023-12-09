@@ -3,6 +3,9 @@ package dev.tdub.springext.geonames;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -150,10 +153,17 @@ public class Geonames {
   }
 
   private static CSVReader reader(String filepath) throws IOException {
-    return new CSVReaderBuilder(
-        new FileReader(new File(filepath), StandardCharsets.UTF_16))
+    try (InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(filepath)) {
+      if (inputStream == null) {
+        throw new InternalServerException("Failed to load Geonames data from " + filepath + " in classpath");
+      }
+      return new CSVReaderBuilder(new InputStreamReader(inputStream, StandardCharsets.UTF_16))
           .withCSVParser(new com.opencsv.CSVParserBuilder().withSeparator('\t').build())
-        .build();
+          .build();
+    } catch (IOException e) {
+      log.error("Failed to read " + filepath + " in classpath", e);
+      throw new InternalServerException("Failed to load Geonames data");
+    }
   }
 
   private static String getCountriesPath() {
@@ -198,5 +208,11 @@ public class Geonames {
     private final String countryCode;
     private final String subdivisionCode;
     private final String postalCode;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(getCountry("US"));
+    System.out.println(getSubdivision("US-CA"));
+    System.out.println(getPostalCode("94105"));
   }
 }
