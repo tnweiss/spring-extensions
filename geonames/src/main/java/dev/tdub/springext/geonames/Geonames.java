@@ -1,12 +1,9 @@
 package dev.tdub.springext.geonames;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +16,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
@@ -38,6 +37,10 @@ public class Geonames {
 
   private static final String POSTAL_CODES_DATA_FILE_NAME_DEFAULT = "postal-codes.tsv";
   private static final String POSTAL_CODES_DATA_FILE_NAME_PROPERTY = "geonames.data.postal-codes";
+
+  private static final CSVParser csvParser = new CSVParserBuilder()
+      .withSeparator('\t')
+      .build();
   
   private static final Map<String, Country> countries;
   private static final Map<String, Subdivision> subdivisions;
@@ -102,105 +105,62 @@ public class Geonames {
   }
 
   private static Map<String, String> loadCountries() {
+    String filename = System.getProperty(COUNTRIES_DATA_FILE_NAME_PROPERTY, COUNTRIES_DATA_FILE_NAME_DEFAULT);
+    List<String[]> data = readTsv(filename);
+
     Map<String, String> output = new HashMap<>();
-
-    try (CSVReader csvReader = reader(getCountriesPath())) {
-      String[] nextRecord;
-
-      while ((nextRecord = csvReader.readNext()) != null) {
-        output.put(nextRecord[0], nextRecord[1]);
-      }
-    } catch (IOException | CsvValidationException e) {
-      log.error("Failed to read data.csv", e);
-      throw new InternalServerException("Failed to read data.csv");
+    for (String[] row: data) {
+      output.put(row[0], row[1]);
     }
 
     return output;
   }
 
   private static Map<String, String> loadSubdivisions() {
+    String filename = System.getProperty(SUBDIVISIONS_DATA_FILE_NAME_PROPERTY, SUBDIVISIONS_DATA_FILE_NAME_DEFAULT);
+    List<String[]> data = readTsv(filename);
+
     Map<String, String> output = new HashMap<>();
-
-    try (CSVReader csvReader = reader(getSubdivisionsPath())) {
-      String[] nextRecord;
-
-      while ((nextRecord = csvReader.readNext()) != null) {
-        output.put(nextRecord[0], nextRecord[1]);
-      }
-    } catch (IOException | CsvValidationException e) {
-      log.error("Failed to read data.csv", e);
-      throw new InternalServerException("Failed to read data.csv");
+    for (String[] row: data) {
+      output.put(row[0], row[1]);
     }
 
     return output;
   }
 
   private static List<GeonameRecord> loadPostalCodes() {
+    String filename = System.getProperty(POSTAL_CODES_DATA_FILE_NAME_PROPERTY, POSTAL_CODES_DATA_FILE_NAME_DEFAULT);
+    List<String[]> data = readTsv(filename);
+
     List<GeonameRecord> output = new ArrayList<>();
-
-    try (CSVReader csvReader = reader(getPostalCodesPath())) {
-      String[] nextRecord;
-
-      while ((nextRecord = csvReader.readNext()) != null) {
-        output.add(new GeonameRecord(nextRecord[0], nextRecord[1], nextRecord[2]));
-      }
-    } catch (IOException | CsvValidationException e) {
-      log.error("Failed to read data.csv", e);
-      throw new InternalServerException("Failed to read data.csv");
+    for (String[] row: data) {
+      output.add(new GeonameRecord(row[0], row[1], row[2]));
     }
 
     return output;
   }
 
-  private static CSVReader reader(String filepath) throws IOException {
+  private static List<String[]> readTsv(String filepath) {
     try (InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(filepath)) {
       if (inputStream == null) {
         throw new InternalServerException("Failed to load Geonames data from " + filepath + " in classpath");
       }
-      return new CSVReaderBuilder(new InputStreamReader(inputStream, StandardCharsets.UTF_16))
-          .withCSVParser(new com.opencsv.CSVParserBuilder().withSeparator('\t').build())
-          .build();
+      Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_16);
+      try (CSVReader csv = new CSVReaderBuilder(reader).withCSVParser(csvParser).build()) {
+        List<String[]> output = new ArrayList<>();
+        String[] nextRecord;
+        while((nextRecord = csv.readNext()) != null) {
+          output.add(nextRecord);
+        }
+        return output;
+      } catch (CsvValidationException ex) {
+        log.error("Failed to read " + filepath + " in classpath", ex);
+        throw new InternalServerException("Failed to load Geonames data");
+      }
     } catch (IOException e) {
       log.error("Failed to read " + filepath + " in classpath", e);
       throw new InternalServerException("Failed to load Geonames data");
     }
-  }
-
-  private static String getCountriesPath() {
-    return System.getProperty(COUNTRIES_DATA_FILE_NAME_PROPERTY, COUNTRIES_DATA_FILE_NAME_DEFAULT);
-//    String countriesDataFilePath = System.getProperty(COUNTRIES_DATA_FILE_NAME_PROPERTY, COUNTRIES_DATA_FILE_NAME_DEFAULT);
-//    URL countriesDataFile = Geonames.class.getClassLoader().getResource(countriesDataFilePath);
-//
-//    if (countriesDataFile == null) {
-//      log.error("Failed to find " + countriesDataFilePath + " in classpath");
-//      throw new InternalServerException("Failed to load Geonames data");
-//    }
-//
-//    return countriesDataFile.getPath();
-  }
-
-  private static String getSubdivisionsPath() {
-    return System.getProperty(SUBDIVISIONS_DATA_FILE_NAME_PROPERTY, SUBDIVISIONS_DATA_FILE_NAME_DEFAULT);
-//    URL subdivisionsDataFile = Geonames.class.getClassLoader().getResource(subdivisionsDataFilePath);
-//
-//    if (subdivisionsDataFile == null) {
-//      log.error("Failed to find " + subdivisionsDataFilePath + " in classpath");
-//      throw new InternalServerException("Failed to load Geonames data");
-//    }
-//
-//    return subdivisionsDataFile.getPath();
-  }
-
-  private static String getPostalCodesPath() {
-    return System.getProperty(POSTAL_CODES_DATA_FILE_NAME_PROPERTY, POSTAL_CODES_DATA_FILE_NAME_DEFAULT);
-//    URL postalCodesDataFile = Geonames.class.getClassLoader().getResource(postalCodesDataFilePath);
-//
-//    if (postalCodesDataFile == null) {
-//      log.error("Failed to find " + postalCodesDataFilePath + " in classpath");
-//      throw new InternalServerException("Failed to load Geonames data");
-//    }
-//
-//    return postalCodesDataFile.getPath();
   }
 
   @Getter
