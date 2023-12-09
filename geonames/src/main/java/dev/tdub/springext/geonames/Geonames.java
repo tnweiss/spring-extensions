@@ -167,39 +167,40 @@ public class Geonames {
   }
 
   private static String getCountriesPath() {
-    String countriesDataFilePath = System.getProperty(COUNTRIES_DATA_FILE_NAME_PROPERTY, COUNTRIES_DATA_FILE_NAME_DEFAULT);
-    URL countriesDataFile = Geonames.class.getClassLoader().getResource(countriesDataFilePath);
-
-    if (countriesDataFile == null) {
-      log.error("Failed to find " + countriesDataFilePath + " in classpath");
-      throw new InternalServerException("Failed to load Geonames data");
-    }
-
-    return countriesDataFile.getPath();
+    return System.getProperty(COUNTRIES_DATA_FILE_NAME_PROPERTY, COUNTRIES_DATA_FILE_NAME_DEFAULT);
+//    String countriesDataFilePath = System.getProperty(COUNTRIES_DATA_FILE_NAME_PROPERTY, COUNTRIES_DATA_FILE_NAME_DEFAULT);
+//    URL countriesDataFile = Geonames.class.getClassLoader().getResource(countriesDataFilePath);
+//
+//    if (countriesDataFile == null) {
+//      log.error("Failed to find " + countriesDataFilePath + " in classpath");
+//      throw new InternalServerException("Failed to load Geonames data");
+//    }
+//
+//    return countriesDataFile.getPath();
   }
 
   private static String getSubdivisionsPath() {
-    String subdivisionsDataFilePath = System.getProperty(SUBDIVISIONS_DATA_FILE_NAME_PROPERTY, SUBDIVISIONS_DATA_FILE_NAME_DEFAULT);
-    URL subdivisionsDataFile = Geonames.class.getClassLoader().getResource(subdivisionsDataFilePath);
-
-    if (subdivisionsDataFile == null) {
-      log.error("Failed to find " + subdivisionsDataFilePath + " in classpath");
-      throw new InternalServerException("Failed to load Geonames data");
-    }
-
-    return subdivisionsDataFile.getPath();
+    return System.getProperty(SUBDIVISIONS_DATA_FILE_NAME_PROPERTY, SUBDIVISIONS_DATA_FILE_NAME_DEFAULT);
+//    URL subdivisionsDataFile = Geonames.class.getClassLoader().getResource(subdivisionsDataFilePath);
+//
+//    if (subdivisionsDataFile == null) {
+//      log.error("Failed to find " + subdivisionsDataFilePath + " in classpath");
+//      throw new InternalServerException("Failed to load Geonames data");
+//    }
+//
+//    return subdivisionsDataFile.getPath();
   }
 
   private static String getPostalCodesPath() {
-    String postalCodesDataFilePath = System.getProperty(POSTAL_CODES_DATA_FILE_NAME_PROPERTY, POSTAL_CODES_DATA_FILE_NAME_DEFAULT);
-    URL postalCodesDataFile = Geonames.class.getClassLoader().getResource(postalCodesDataFilePath);
-
-    if (postalCodesDataFile == null) {
-      log.error("Failed to find " + postalCodesDataFilePath + " in classpath");
-      throw new InternalServerException("Failed to load Geonames data");
-    }
-
-    return postalCodesDataFile.getPath();
+    return System.getProperty(POSTAL_CODES_DATA_FILE_NAME_PROPERTY, POSTAL_CODES_DATA_FILE_NAME_DEFAULT);
+//    URL postalCodesDataFile = Geonames.class.getClassLoader().getResource(postalCodesDataFilePath);
+//
+//    if (postalCodesDataFile == null) {
+//      log.error("Failed to find " + postalCodesDataFilePath + " in classpath");
+//      throw new InternalServerException("Failed to load Geonames data");
+//    }
+//
+//    return postalCodesDataFile.getPath();
   }
 
   @Getter
@@ -208,11 +209,5 @@ public class Geonames {
     private final String countryCode;
     private final String subdivisionCode;
     private final String postalCode;
-  }
-
-  public static void main(String[] args) {
-    System.out.println(getCountry("US"));
-    System.out.println(getSubdivision("US-CA"));
-    System.out.println(getPostalCode("94105"));
   }
 }
