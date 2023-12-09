@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 @Converter(autoApply = true)
 public class CountryAttributeConverter implements AttributeConverter<Country, String> {
   @Override

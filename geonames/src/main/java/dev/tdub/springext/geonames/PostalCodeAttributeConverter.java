@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 @Converter(autoApply = true)
 public class PostalCodeAttributeConverter implements AttributeConverter<PostalCode, String> {
   @Override
