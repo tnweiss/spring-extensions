@@ -28,11 +28,6 @@ public class PostalCodeDto implements PostalCode {
     return Geonames.getPostalCode(postalCode).orElse(new PostalCodeDto(postalCode));
   }
 
-  @JsonValue
-  public String jsonValue() {
-    return code;
-  }
-
   @Getter
   @EqualsAndHashCode
   @RequiredArgsConstructor

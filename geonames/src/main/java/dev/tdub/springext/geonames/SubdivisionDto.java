@@ -46,11 +46,6 @@ public class SubdivisionDto implements Subdivision {
         .orElse(new SubdivisionDto(alpha2Code));
   }
 
-  @JsonValue
-  public String jsonValue() {
-    return country.getAlpha2Code() + "-" + alpha2Code;
-  }
-
   @Getter
   @EqualsAndHashCode
   @RequiredArgsConstructor

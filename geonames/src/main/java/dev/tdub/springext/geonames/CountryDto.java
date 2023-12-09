@@ -44,11 +44,6 @@ public class CountryDto implements Country {
         .orElse(new CountryDto(alpha2Code));
   }
 
-  @JsonValue
-  public String jsonValue() {
-    return alpha2Code;
-  }
-
   @Getter
   @EqualsAndHashCode
   static class CountryBuilder {
