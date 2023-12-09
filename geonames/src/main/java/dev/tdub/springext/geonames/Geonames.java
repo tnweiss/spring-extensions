@@ -1,5 +1,6 @@
 package dev.tdub.springext.geonames;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -150,7 +151,7 @@ public class Geonames {
 
   private static CSVReader reader(String filepath) throws IOException {
     return new CSVReaderBuilder(
-        new FileReader(filepath, StandardCharsets.UTF_16))
+        new FileReader(new File(filepath), StandardCharsets.UTF_16))
           .withCSVParser(new com.opencsv.CSVParserBuilder().withSeparator('\t').build())
         .build();
   }
