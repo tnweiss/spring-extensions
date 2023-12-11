@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode
 public class SubdivisionDto implements Subdivision {
+  public static final SubdivisionDto UNKNOWN = new SubdivisionDto("NK-NK");
+
   private final CountryDto country;
   private final String name;
   private final String alpha2Code;
@@ -31,7 +33,7 @@ public class SubdivisionDto implements Subdivision {
   }
 
   SubdivisionDto(String alpha2Code) {
-    this.country = null;
+    this.country = CountryDto.UNKNOWN;
     this.name = "UNKNOWN";
     this.alpha2Code = alpha2Code;
     this.postalCodes = Set.of();
@@ -67,5 +69,10 @@ public class SubdivisionDto implements Subdivision {
     public SubdivisionDto build(CountryDto country) {
       return new SubdivisionDto(country, this);
     }
+  }
+
+  @Override
+  public String toString() {
+    return this.alpha2Code;
   }
 }

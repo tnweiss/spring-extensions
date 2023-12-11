@@ -1,7 +1,6 @@
 package dev.tdub.springext.geonames;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,13 +18,18 @@ public class PostalCodeDto implements PostalCode {
   }
 
   PostalCodeDto(String code) {
-    this.subdivision = null;
+    this.subdivision = SubdivisionDto.UNKNOWN;
     this.code = code;
   }
 
   @JsonCreator
   public static PostalCode fromPostalCode(String postalCode) {
     return Geonames.getPostalCode(postalCode).orElse(new PostalCodeDto(postalCode));
+  }
+
+  @Override
+  public Country getCountry() {
+    return getSubdivision().getCountry();
   }
 
   @Getter
@@ -37,5 +41,10 @@ public class PostalCodeDto implements PostalCode {
     public PostalCodeDto build(SubdivisionDto subdivision) {
       return new PostalCodeDto(subdivision, this);
     }
+  }
+
+  @Override
+  public String toString() {
+    return this.code;
   }
 }

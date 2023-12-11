@@ -7,4 +7,6 @@ public interface PostalCode {
   String getCode();
 
   Subdivision getSubdivision();
+
+  Country getCountry();
 }

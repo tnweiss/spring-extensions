@@ -9,7 +9,7 @@ import jakarta.persistence.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-@Converter(autoApply = true)
+@Converter
 public class CountryAttributeConverter implements AttributeConverter<Country, String> {
   @Override
   public String convertToDatabaseColumn(Country attribute) {
