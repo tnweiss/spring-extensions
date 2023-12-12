@@ -2,7 +2,6 @@ package dev.tdub.springext.lookup;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import dev.tdub.springext.auth.UserRoleService;
 import dev.tdub.springext.error.exceptions.AuthorizationException;
@@ -13,7 +12,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,18 +30,18 @@ public class LookupValueTables {
 
       CriteriaQuery<String> query = criteriaBuilder.createQuery(String.class);
       Root<DAO> root = query.from(clazz);
-      query.select(root.get(column));
+      query.select(root.get(column).as(String.class));
       query.distinct(true);
 
       if (filter != null) {
-        query.where(criteriaBuilder.like(criteriaBuilder.lower(root.get(column)), "%" + filter.toLowerCase() + "%"));
+        query.where(criteriaBuilder.like(criteriaBuilder.lower(root.get(column).as(String.class)), "%" + filter.toLowerCase() + "%"));
       }
 
-      Order[] sort = pagination.sort(criteriaBuilder, root, keyMappings);
+      Order[] sort = pagination.sort(criteriaBuilder, c -> root.get(c).as(String.class), keyMappings);
       if (sort.length != 0) {
         query.orderBy(sort);
       } else {
-        query.orderBy(criteriaBuilder.asc(root.get(column)));
+        query.orderBy(criteriaBuilder.asc(root.get(column).as(String.class)));
       }
 
       List<String> results = em.createQuery(query)

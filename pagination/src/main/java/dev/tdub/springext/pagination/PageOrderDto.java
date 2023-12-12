@@ -34,15 +34,25 @@ public class PageOrderDto implements PageOrder {
     this.direction = PageOrderDirection.from(sortParameters[1]);
   }
 
+  @Override
   public Order order(CriteriaBuilder builder, Root<?> root) {
     return direction == PageOrderDirection.ASC ? builder.asc(root.get(column)) : builder.desc(root.get(column));
   }
 
+  @Override
   public Order order(CriteriaBuilder builder, Root<?> root, Map<String, String> keyMappings) {
     String dbColumn = getDbColumn(keyMappings);
     return sort().apply(builder, root.get(dbColumn));
   }
 
+  @Override
+  public <T> Order order(CriteriaBuilder builder, Function<String, Expression<T>> expressionAccessor,
+                         Map<String, String> keyMappings) {
+    String dbColumn = getDbColumn(keyMappings);
+    return sort().apply(builder, expressionAccessor.apply(dbColumn));
+  }
+
+  @Override
   public Sort.Order toSortOrder(Map<String, String> keyMappings) {
     return sortOrderDirection().apply(getDbColumn(keyMappings));
   }

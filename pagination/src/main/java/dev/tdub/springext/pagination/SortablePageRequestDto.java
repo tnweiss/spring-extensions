@@ -3,12 +3,14 @@ package dev.tdub.springext.pagination;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
@@ -37,6 +39,13 @@ public class SortablePageRequestDto extends PageRequestDto implements SortablePa
   public Order[] sort(CriteriaBuilder criteriaBuilder, Root<?> root, Map<String, String> keyMappings) {
     return sort.stream()
         .map(o -> o.order(criteriaBuilder, root, keyMappings))
+        .toArray(Order[]::new);
+  }
+
+  @Override
+  public <T> Order[] sort(CriteriaBuilder criteriaBuilder, Function<String, Expression<T>> rootAccessor, Map<String, String> keyMappings) {
+    return sort.stream()
+        .map(o -> o.order(criteriaBuilder, rootAccessor, keyMappings))
         .toArray(Order[]::new);
   }
 
