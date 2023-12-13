@@ -1,4 +1,4 @@
-package dev.tdub.springext.geonames;
+package dev.tdub.springext.geonames.subdivision;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,8 +6,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
+import dev.tdub.springext.geonames.Geonames;
+import dev.tdub.springext.geonames.PostalCode;
+import dev.tdub.springext.geonames.postalcode.PostalCodeDto;
+import dev.tdub.springext.geonames.Subdivision;
+import dev.tdub.springext.geonames.country.CountryDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

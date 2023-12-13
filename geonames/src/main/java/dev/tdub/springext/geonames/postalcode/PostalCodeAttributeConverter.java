@@ -1,7 +1,8 @@
-package dev.tdub.springext.geonames;
+package dev.tdub.springext.geonames.postalcode;
 
 import java.util.Optional;
 
+import dev.tdub.springext.geonames.PostalCode;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import org.springframework.stereotype.Component;

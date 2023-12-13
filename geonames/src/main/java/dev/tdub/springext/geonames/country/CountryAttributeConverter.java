@@ -1,9 +1,8 @@
-package dev.tdub.springext.geonames;
-
-import javax.swing.text.html.Option;
+package dev.tdub.springext.geonames.country;
 
 import java.util.Optional;
 
+import dev.tdub.springext.geonames.Country;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import org.springframework.stereotype.Component;

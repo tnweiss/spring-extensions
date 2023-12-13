@@ -17,7 +17,7 @@ public class EmailDto implements Email {
     if (address == null) {
       throw new IllegalArgumentException("Email address cannot be null");
     }
-    this.address = address;
+    this.address = address.toLowerCase();
   }
 
   @Override

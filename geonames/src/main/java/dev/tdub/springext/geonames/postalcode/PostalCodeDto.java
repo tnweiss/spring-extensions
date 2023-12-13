@@ -1,7 +1,11 @@
-package dev.tdub.springext.geonames;
+package dev.tdub.springext.geonames.postalcode;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import dev.tdub.springext.geonames.Country;
+import dev.tdub.springext.geonames.Geonames;
+import dev.tdub.springext.geonames.PostalCode;
+import dev.tdub.springext.geonames.subdivision.SubdivisionDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

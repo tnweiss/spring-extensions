@@ -1,4 +1,4 @@
-package dev.tdub.springext.geonames;
+package dev.tdub.springext.geonames.country;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import dev.tdub.springext.geonames.Country;
+import dev.tdub.springext.geonames.Geonames;
+import dev.tdub.springext.geonames.Subdivision;
+import dev.tdub.springext.geonames.subdivision.SubdivisionDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
