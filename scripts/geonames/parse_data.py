@@ -17,6 +17,7 @@ DATA_URLS = [
 
 # get current files directory
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+DATA_FOLDER = os.path.join(CURRENT_DIR, '..', '..', 'spring-extensions-core', 'src', 'main', 'resources')
 
 
 # define a Country typed dict
@@ -125,7 +126,6 @@ if __name__ == '__main__':
     countries: Dict[str, Iso3166Country] = get_country_names()
     geonames_data: List[GeoNameEntry] = fetch_geonames_data()
 
-    data_folder = os.path.join(CURRENT_DIR, '..', '..', 'geonames', 'src', 'main', 'resources')
-    write_countries(data_folder, countries)
-    write_subdivisions(data_folder, geonames_data)
-    write_postal_codes(data_folder, geonames_data)
+    write_countries(DATA_FOLDER, countries)
+    write_subdivisions(DATA_FOLDER, geonames_data)
+    write_postal_codes(DATA_FOLDER, geonames_data)

@@ -1,11 +1,4 @@
 rootProject.name = 'spring-extensions'
 
-include 'api'
-include 'pagination'
-include 'error-handling'
-include 'lookup-table'
-include 'auth'
-include 'util'
-include 'audit'
-include 'geonames'
+include 'spring-extensions-core'
 
