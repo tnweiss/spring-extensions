@@ -1,7 +1,5 @@
 package dev.tdub.springext.util.phonenumber;
 
-import dev.tdub.springext.util.email.Email;
-import dev.tdub.springext.util.email.EmailDto;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

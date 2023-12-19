@@ -1,8 +1,8 @@
-package dev.tdub.springext.util.email;
+package dev.tdub.springext.email;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import dev.tdub.springext.util.email.Email;
+import jakarta.mail.internet.InternetAddress;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -24,6 +24,15 @@ public class EmailDto implements Email {
   @Override
   public boolean isValid() {
     return address.matches(EMAIL_REGEX);
+  }
+
+  @Override
+  public InternetAddress getInternetAddress() {
+    try {
+      return new InternetAddress(address);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Invalid email address: " + address);
+    }
   }
 
   @Override

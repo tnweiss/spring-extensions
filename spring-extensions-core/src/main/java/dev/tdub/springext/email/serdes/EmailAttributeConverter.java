@@ -1,7 +1,9 @@
-package dev.tdub.springext.util.email;
+package dev.tdub.springext.email.serdes;
 
 import java.util.Optional;
 
+import dev.tdub.springext.email.Email;
+import dev.tdub.springext.email.EmailDto;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

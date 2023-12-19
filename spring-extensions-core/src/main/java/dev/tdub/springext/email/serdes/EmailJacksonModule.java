@@ -1,16 +1,17 @@
-package dev.tdub.springext.util.serdes;
+package dev.tdub.springext.email.serdes;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import dev.tdub.springext.email.Email;
 import dev.tdub.springext.util.phonenumber.PhoneNumber;
 import dev.tdub.springext.util.phonenumber.PhoneNumberDeserializer;
 import dev.tdub.springext.util.phonenumber.PhoneNumberSerializer;
 
-public class UtilJacksonModule extends SimpleModule {
-  public UtilJacksonModule() {
+public class EmailJacksonModule extends SimpleModule {
+  public EmailJacksonModule() {
     super();
 
-    addSerializer(new PhoneNumberSerializer());
-    addDeserializer(PhoneNumber.class, new PhoneNumberDeserializer());
+    addSerializer(new EmailSerializer());
+    addDeserializer(Email.class, new EmailDeserializer());
   }
 }

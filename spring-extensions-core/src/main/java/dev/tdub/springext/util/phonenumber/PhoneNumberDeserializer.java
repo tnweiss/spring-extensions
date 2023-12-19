@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import dev.tdub.springext.util.email.Email;
-import dev.tdub.springext.util.email.EmailDto;
 
 import java.io.IOException;
 

@@ -1,5 +1,6 @@
-package dev.tdub.springext.util.serdes;
+package dev.tdub.springext.email.serdes;
 
+import dev.tdub.springext.email.Email;
 import dev.tdub.springext.util.phonenumber.PhoneNumber;
 import dev.tdub.springext.util.phonenumber.PhoneNumberAttributeConverter;
 import org.hibernate.annotations.ConverterRegistration;
@@ -10,17 +11,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 @ConverterRegistrations({
-    @ConverterRegistration(domainType = PhoneNumber.class, converter = PhoneNumberAttributeConverter.class),
+    @ConverterRegistration(domainType = Email.class, converter = EmailAttributeConverter.class)
 })
 @Configuration
-public class UtilSerDesConfig {
+public class EmailSerDesConfig {
   @Bean
   public Jackson2ObjectMapperBuilderCustomizer customJsonSerializer() {
-    return builder -> builder.modules(new UtilJacksonModule());
+    return builder -> builder.modules(new EmailJacksonModule());
   }
 
   @Bean
   public MongoCustomConversions mongoCustomConversions() {
-    return new UtilMongoCustomConversions();
+    return new EmailMongoCustomConversions();
   }
 }

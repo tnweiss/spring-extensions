@@ -1,5 +1,6 @@
-package dev.tdub.springext.util.email;
+package dev.tdub.springext.email.serdes;
 
+import dev.tdub.springext.email.Email;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 

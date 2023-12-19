@@ -3,7 +3,6 @@ package dev.tdub.springext.util.phonenumber;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import dev.tdub.springext.util.email.Email;
 
 import java.io.IOException;
 
