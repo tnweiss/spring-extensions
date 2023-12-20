@@ -13,11 +13,11 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 
-public class SmptEmailClient implements EmailClient {
+public class SmtpEmailClient implements EmailClient {
   private final String from;
   private final Session session;
 
-  public SmptEmailClient(String from, String host, String port, String username, String password) {
+  public SmtpEmailClient(String from, String host, String port, String username, String password) {
     Properties props = new Properties();
     props.put("mail.smtp.host", host);
     props.put("mail.smtp.port", port);
