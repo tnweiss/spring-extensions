@@ -6,8 +6,10 @@ import dev.tdub.springext.email.Email;
 import dev.tdub.springext.email.EmailDto;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
 
-@Converter
+@Component
+@Converter(autoApply = true)
 public class EmailAttributeConverter implements AttributeConverter<Email, String> {
 
   @Override

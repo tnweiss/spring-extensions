@@ -37,22 +37,11 @@ public class SmptEmailClient implements EmailClient {
       msg.setFrom(new InternetAddress(from));
       msg.setRecipient(Message.RecipientType.TO, recipient.getInternetAddress());
       msg.setSubject(subject);
-      msg.setText(body);
+      msg.setContent(body, "text/html; charset=utf-8");
       Transport.send(msg);
     } catch (MessagingException e) {
       throw new InternalServerException(e);
     }
-  }
-
-  public static void main(String[] args) {
-    EmailClient client = new SmptEmailClient(
-        "ora.support@gmail.com",
-        "192.168.1.69",
-        "1025",
-        "ora_user",
-        "ora_user_password");
-
-    client.send(new EmailDto("tnweiss5@gmail.com"), "Test Support", "Hello World");
   }
 
 }
