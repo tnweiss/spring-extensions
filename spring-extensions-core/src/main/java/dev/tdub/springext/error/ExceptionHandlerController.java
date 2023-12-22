@@ -90,7 +90,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         .getAllErrors()
         .stream()
         .map(DefaultMessageSourceResolvable::getDefaultMessage)
-        .collect(Collectors.joining("."));
+        .collect(Collectors.joining(". "));
     return ResponseEntity.badRequest().body(new ErrorResponseDto(error, ridSupplier.get()));
   }
 }
