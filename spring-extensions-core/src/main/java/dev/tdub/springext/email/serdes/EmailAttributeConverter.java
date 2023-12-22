@@ -21,6 +21,8 @@ public class EmailAttributeConverter implements AttributeConverter<Email, String
 
   @Override
   public Email convertToEntityAttribute(String dbData) {
-    return new EmailDto(dbData);
+    return Optional.ofNullable(dbData)
+        .map(EmailDto::new)
+        .orElse(null);
   }
 }

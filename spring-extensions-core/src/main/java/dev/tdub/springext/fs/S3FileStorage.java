@@ -1,6 +1,7 @@
 package dev.tdub.springext.fs;
 
 import java.io.InputStream;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -8,8 +9,10 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 @RequiredArgsConstructor
 public class S3FileStorage implements FileStorage {
@@ -56,5 +59,18 @@ public class S3FileStorage implements FileStorage {
         .build();
     return s3Client.getObjectAsBytes(request)
         .asInputStream();
+  }
+
+  @Override
+  public List<String> list(String relativePath) {
+    ListObjectsRequest request = ListObjectsRequest.builder()
+        .bucket(bucketName)
+        .prefix(relativePath)
+        .build();
+    return s3Client.listObjects(request)
+        .contents()
+        .stream()
+        .map(S3Object::key)
+        .toList();
   }
 }

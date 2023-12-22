@@ -18,6 +18,8 @@ public class PostalCodeAttributeConverter implements AttributeConverter<PostalCo
 
   @Override
   public PostalCode convertToEntityAttribute(String dbData) {
-    return PostalCodeDto.fromPostalCode(dbData);
+    return Optional.ofNullable(dbData)
+        .map(PostalCodeDto::fromPostalCode)
+        .orElse(null);
   }
 }

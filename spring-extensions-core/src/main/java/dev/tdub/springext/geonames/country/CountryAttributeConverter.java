@@ -18,6 +18,8 @@ public class CountryAttributeConverter implements AttributeConverter<Country, St
 
   @Override
   public Country convertToEntityAttribute(String dbData) {
-    return CountryDto.fromAlpha2Code(dbData);
+    return Optional.ofNullable(dbData)
+        .map(CountryDto::fromAlpha2Code)
+        .orElse(null);
   }
 }

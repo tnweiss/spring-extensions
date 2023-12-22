@@ -18,6 +18,8 @@ public class SubdivisionAttributeConverter implements AttributeConverter<Subdivi
 
   @Override
   public Subdivision convertToEntityAttribute(String dbData) {
-    return SubdivisionDto.fromAlpha2Code(dbData);
+    return Optional.ofNullable(dbData)
+        .map(SubdivisionDto::fromAlpha2Code)
+        .orElse(null);
   }
 }

@@ -33,7 +33,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class Geonames {
-  private static final String LOAD_VALIDATION_PROPERTY = "dev.tdub.springext.geonames.load-validation";
+  private static final String LOAD_VALIDATION_PROPERTY = "springext.geonames.load-validation";
 
   private static final String COUNTRIES_DATA_FILE_NAME_DEFAULT = "countries.tsv";
   private static final String COUNTRIES_DATA_FILE_NAME_PROPERTY = "geonames.data.countries";
@@ -54,7 +54,7 @@ public class Geonames {
 
 
   static {
-    if (System.getProperty(LOAD_VALIDATION_PROPERTY, "false").equals("false")) {
+    if (System.getProperty(LOAD_VALIDATION_PROPERTY, "true").equals("false")) {
       countries = Map.of();
       subdivisions = Map.of();
       postalCodes = Map.of();

@@ -19,17 +19,17 @@ import java.util.regex.Pattern;
 @EqualsAndHashCode
 public class PageOrderDto implements PageOrder {
   private static final Predicate<String> SORT_FORMAT =
-      Pattern.compile("^[a-zA-Z0-9]+,(ASC|DESC)$").asMatchPredicate();
+      Pattern.compile("^[a-zA-Z0-9]+-(ASC|DESC)$").asMatchPredicate();
 
   private final String column;
   private final PageOrderDirection direction;
 
   public PageOrderDto(String sortString) {
     if (!SORT_FORMAT.test(sortString)) {
-      throw new ClientException("Sort must be formatted as '<COLUMN>,(ASC || DESC)'. Not '%s'".formatted(sortString));
+      throw new ClientException("Sort must be formatted as '<COLUMN>-(ASC || DESC)'. Not '%s'".formatted(sortString));
     }
 
-    String[] sortParameters = sortString.split(",");
+    String[] sortParameters = sortString.split("-");
     this.column = sortParameters[0];
     this.direction = PageOrderDirection.from(sortParameters[1]);
   }

@@ -19,6 +19,8 @@ public class PhoneNumberAttributeConverter implements AttributeConverter<PhoneNu
 
   @Override
   public PhoneNumber convertToEntityAttribute(String dbData) {
-    return new PhoneNumberDto(dbData);
+    return Optional.ofNullable(dbData)
+        .map(PhoneNumberDto::new)
+        .orElse(null);
   }
 }
