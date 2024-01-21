@@ -8,6 +8,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
     havingValue = "true"
 )
 @Component
+@Log4j2
 @RequiredArgsConstructor
 public class AuthService {
   private final AccessTokenGenerator accessTokenGenerator;
@@ -34,6 +36,7 @@ public class AuthService {
       Claims claims = parser.parseSignedClaims(accessToken).getPayload();
       return new AccessTokenClaimsDto(claims);
     } catch (JwtException ex) {
+      log.debug(ex);
       throw new AuthenticationException();
     }
   }
@@ -43,6 +46,7 @@ public class AuthService {
       Claims claims = parser.parseSignedClaims(refreshToken).getPayload();
       return new RefreshTokenClaimsDto(claims);
     } catch (JwtException ex) {
+      log.debug(ex);
       throw new AuthenticationException();
     }
   }

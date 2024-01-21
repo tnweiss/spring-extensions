@@ -14,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -22,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
@@ -42,6 +44,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         authenticate(request);
       }
     } catch (AuthenticationException ex) {
+      log.error(ex);
       handleUnauthorized(response);
       return;
     }
@@ -68,6 +71,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
       response.setStatus(HttpStatus.UNAUTHORIZED.value());
       response.setContentType("application/json");
     } catch (Exception ex) {
+      log.error("Failed to write error response.", ex);
       response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
       throw new InternalServerException(ex);
     }
