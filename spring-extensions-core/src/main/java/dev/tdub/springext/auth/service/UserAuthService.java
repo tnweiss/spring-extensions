@@ -1,6 +1,10 @@
 package dev.tdub.springext.auth.service;
 
+import java.util.Optional;
+
+import dev.tdub.springext.auth.jwt.AuthenticationClaims;
+
 public interface UserAuthService {
-  Long authenticate(String username, String password);
-  void requireActiveUser(Long userId);
+  Optional<AuthenticationClaims> authenticate(String username, String password);
+  Optional<AuthenticationClaims> getActiveUserClaims(Long userId);
 }

@@ -13,6 +13,7 @@ import dev.tdub.springext.auth.UserPrincipal;
 import dev.tdub.springext.auth.service.NetworkAuthService;
 import dev.tdub.springext.auth.service.SessionAuthService;
 import dev.tdub.springext.auth.service.UserAuthService;
+import dev.tdub.springext.error.exceptions.AuthenticationException;
 import dev.tdub.springext.error.exceptions.ClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,10 +39,11 @@ public class AuthFacade {
 
   public JwtAuthResponse authenticate(BasicAuthRequest request, String remoteAddress) {
     log.debug("Authenticating basic credentials {}", () -> json(request));
-    Long userId = userAuthService.authenticate(request.getUsername(), request.getPassword());
+    AuthenticationClaims authClaims = userAuthService.authenticate(request.getUsername(), request.getPassword())
+        .orElseThrow(AuthenticationException::new);
     Optional<Network> network = networkAuthService.get(remoteAddress);
-    JwtAuthSession jwtAuthSession = sessionAuthService.create(userId, network.orElse(null), remoteAddress);
-    JwtAuthResponse response = authService.createTokens(jwtAuthSession);
+    JwtAuthSession jwtAuthSession = sessionAuthService.create(authClaims.getSub(), network.orElse(null), remoteAddress);
+    JwtAuthResponse response = authService.createTokens(jwtAuthSession, authClaims);
     auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.CREATE, AUDIT_RESOURCE, Map.of("ip", remoteAddress));
     log.debug("Success '{}'", () -> json(response));
     return response;
@@ -50,10 +52,11 @@ public class AuthFacade {
   public JwtAuthResponse authenticate(RefreshTokenAuthRequest request) {
     log.info("Authenticating refresh token credentials '{}'", () -> json(request));
     RefreshTokenClaims claims = authService.verifyRefreshToken(request.getRefreshToken());
-    userAuthService.requireActiveUser(claims.getSub());
+    AuthenticationClaims authClaims = userAuthService.getActiveUserClaims(claims.getSub())
+        .orElseThrow(AuthenticationException::new);
     JwtAuthSession jwtAuthSession = sessionAuthService
         .updateRefreshTokenId(claims.getSessionId(), claims.getRefreshId(), UUID.randomUUID());
-    JwtAuthResponse response = authService.createTokens(jwtAuthSession);
+    JwtAuthResponse response = authService.createTokens(jwtAuthSession, authClaims);
     auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.UPDATE, AUDIT_RESOURCE);
     log.debug("Updated user {} session {} to {}", claims.getSub(), claims.getSessionId(),
         jwtAuthSession.getSessionId());

@@ -24,10 +24,9 @@ public class AuthService {
   private final RefreshTokenGenerator refreshTokenGenerator;
   private final JwtParser parser;
 
-  public JwtAuthResponse createTokens(JwtAuthSession jwtAuthSession) {
-    String accessToken = accessTokenGenerator.create(new AccessTokenClaimsDto(jwtAuthSession.getUserId(), jwtAuthSession.getSessionId()));
-    String refreshToken = refreshTokenGenerator.create(new RefreshTokenClaimsDto(jwtAuthSession.getUserId(), jwtAuthSession.getSessionId(),
-        jwtAuthSession.getRefreshTokenId()));
+  public JwtAuthResponse createTokens(JwtAuthSession jwtAuthSession, AuthenticationClaims authenticationClaims) {
+    String accessToken = createAccessToken(jwtAuthSession, authenticationClaims);
+    String refreshToken = createRefreshToken(jwtAuthSession);
     return new AuthResponseDto(accessToken, refreshToken);
   }
 
@@ -49,5 +48,23 @@ public class AuthService {
       log.debug(ex);
       throw new AuthenticationException();
     }
+  }
+
+  private String createAccessToken(JwtAuthSession jwtAuthSession, AuthenticationClaims accessTokenClaims) {
+    AccessTokenClaims claims = new AccessTokenClaimsDto(
+        jwtAuthSession.getUserId(),
+        jwtAuthSession.getSessionId(),
+        accessTokenClaims.getAdditionalClaims()
+    );
+    return accessTokenGenerator.create(claims);
+  }
+
+  private String createRefreshToken(JwtAuthSession jwtAuthSession) {
+    RefreshTokenClaims claims = new RefreshTokenClaimsDto(
+        jwtAuthSession.getUserId(),
+        jwtAuthSession.getSessionId(),
+        jwtAuthSession.getRefreshTokenId()
+    );
+    return refreshTokenGenerator.create(claims);
   }
 }
