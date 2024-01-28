@@ -11,6 +11,6 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class AuthenticationClaimsDto implements AuthenticationClaims {
-  private Long sub;
-  private Map<String, Object> additionalClaims;
+  private final Long sub;
+  private final Map<String, Object> additionalClaims;
 }
