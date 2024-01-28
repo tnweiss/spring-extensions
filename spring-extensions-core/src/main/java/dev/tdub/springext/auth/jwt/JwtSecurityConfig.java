@@ -55,6 +55,7 @@ public class JwtSecurityConfig {
 
         .subject(Objects.toString(claims.getSub()))
         .claim("sessionId", Objects.toString(claims.getSessionId()))
+        .claim("additionalClaims", claims.getAdditionalClaims())
 
         .signWith(key)
         .compact();
