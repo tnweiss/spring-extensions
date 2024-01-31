@@ -37,12 +37,13 @@ public class AuthFacade {
   private final SessionAuthService sessionAuthService;
   private final AuditLog auditLog;
 
-  public JwtAuthResponse authenticate(BasicAuthRequest request, String remoteAddress) {
+  public JwtAuthResponse authenticate(BasicAuthRequest request, String remoteAddress, Map<String, String> headers) {
     log.debug("Authenticating basic credentials {}", () -> json(request));
     AuthenticationClaims authClaims = userAuthService.authenticate(request.getUsername(), request.getPassword())
         .orElseThrow(AuthenticationException::new);
     Optional<Network> network = networkAuthService.get(remoteAddress);
-    JwtAuthSession jwtAuthSession = sessionAuthService.create(authClaims.getSub(), network.orElse(null), remoteAddress);
+    JwtAuthSession jwtAuthSession = sessionAuthService.create(authClaims.getSub(), network.orElse(null),
+        remoteAddress, headers);
     JwtAuthResponse response = authService.createTokens(jwtAuthSession, authClaims);
     auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.CREATE, AUDIT_RESOURCE, Map.of("ip", remoteAddress));
     log.debug("Success '{}'", () -> json(response));

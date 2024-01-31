@@ -1,5 +1,6 @@
 package dev.tdub.springext.auth.jwt;
 
+import java.util.Map;
 import java.util.UUID;
 
 import dev.tdub.springext.auth.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,8 +32,11 @@ public class AuthController {
 
   @Operation(summary = "Create a new Session with username and password")
   @PostMapping("/auth/tokens")
-  public JwtAuthResponse authenticate(@RequestBody BasicAuthRequestDto authRequest, HttpServletRequest request) {
-    return authFacade.authenticate(authRequest, request.getRemoteAddr());
+  public JwtAuthResponse authenticate(
+      @RequestBody BasicAuthRequestDto authRequest,
+      HttpServletRequest request,
+      @RequestHeader Map<String, String> headers) {
+    return authFacade.authenticate(authRequest, request.getRemoteAddr(), headers);
   }
 
   @Operation(summary = "Refresh an existing Session")

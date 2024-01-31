@@ -9,7 +9,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = 'dev.tdub.spring-extensions'
-    version = '0.0.9'
+    version = '0.0.10'
     if (System.getenv("RELEASE") == null || System.getenv("RELEASE") != "true") {
         version = version + "-SNAPSHOT"
     }
