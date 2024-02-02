@@ -11,6 +11,7 @@ import dev.tdub.springext.error.exceptions.ClientException;
 import dev.tdub.springext.error.exceptions.InternalServerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -45,9 +46,21 @@ public class LocalFileStorage implements FileStorage {
   @Override
   public void delete(String relativePath) {
     File file = new File(rootPath, relativePath);
-    if (!file.delete()) {
+
+    if (!file.exists()) {
+      return;
+    }
+
+    if (file.isFile() && !file.delete()) {
       log.error("Failed to delete file: '{}'", file.getPath());
       throw new ClientException("Failed to delete file: " + relativePath);
+    } else {
+      try {
+        FileUtils.deleteDirectory(file);
+      } catch (Exception e) {
+        log.error(e);
+        throw new InternalServerException("Failed to delete file: " + relativePath);
+      }
     }
   }
 
@@ -58,8 +71,15 @@ public class LocalFileStorage implements FileStorage {
 
   @Override
   public InputStream get(String relativePath) {
+    File file = new File(rootPath, relativePath);
+
+    if (!file.exists()) {
+      log.error("File does not exist: '{}'", file.getPath());
+      throw new InternalServerException("File does not exist: " + relativePath);
+    }
+
     try {
-      return Files.newInputStream(new File(rootPath, relativePath).toPath());
+      return Files.newInputStream(file.toPath());
     } catch (Exception e) {
       log.error(e);
       throw new InternalServerException("Failed to read file: " + relativePath);
@@ -80,14 +100,14 @@ public class LocalFileStorage implements FileStorage {
     }
 
     return Arrays.stream(Objects.requireNonNull(dir.list()))
-        .map(p -> p.replaceFirst(this.rootPath.getPath(), ""))
+        .map(p -> relativePath + "/" + p)
         .toList();
   }
 
   private void makeParentDirs(File file, String relativePath) {
     File parent = file.getParentFile();
-    if (!parent.mkdirs()) {
-      log.error("Failed to create parent directories for: '{}'", file.getPath());
+    if (!parent.exists() && !parent.mkdirs()) {
+      log.error("Failed to create parent directories for: '{}'", parent.getPath());
       throw new InternalServerException("Failed to create parent directories for: " + relativePath);
     }
   }
