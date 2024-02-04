@@ -15,6 +15,7 @@ import dev.tdub.springext.auth.service.SessionAuthService;
 import dev.tdub.springext.auth.service.UserAuthService;
 import dev.tdub.springext.error.exceptions.AuthenticationException;
 import dev.tdub.springext.error.exceptions.ClientException;
+import dev.tdub.springext.error.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -77,7 +78,10 @@ public class AuthFacade {
 
   public void invalidateSession(UserPrincipal principal, UUID sessionId) {
     log.info("User '{}' invalidating Session '{}'", principal.getUserId(), sessionId);
-    if (!isAuthorizedToDeleteSession(principal, sessionId)) {
+    // ensure the session exists
+    JwtAuthSession session = this.sessionAuthService.get(sessionId)
+        .orElseThrow(() -> new NotFoundException("Session '%s' not found.".formatted(sessionId)));
+    if (!isAuthorizedToDeleteSession(principal, session)) {
       throw new ClientException("Caller is not authorized to delete session.");
     }
     sessionAuthService.delete(sessionId);
@@ -85,11 +89,11 @@ public class AuthFacade {
     log.debug("Success");
   }
 
-  private boolean isAuthorizedToDeleteSession(UserPrincipal principal, UUID sessionId) {
-    if (Objects.equals(principal.getSessionId(), sessionId)) {
+  private boolean isAuthorizedToDeleteSession(UserPrincipal principal, JwtAuthSession session) {
+    if (Objects.equals(principal.getSessionId(), session.getSessionId())) {
       return true;
     }
 
-    return Objects.equals(sessionAuthService.get(sessionId).getUserId(), principal.getUserId());
+    return Objects.equals(session.getUserId(), principal.getUserId());
   }
 }
