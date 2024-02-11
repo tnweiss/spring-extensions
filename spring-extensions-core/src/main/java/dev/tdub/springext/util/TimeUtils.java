@@ -5,6 +5,6 @@ import java.time.temporal.ChronoUnit;
 
 public class TimeUtils {
   public static Instant now() {
-    return Instant.now().truncatedTo(ChronoUnit.MICROS);
+    return Instant.now().truncatedTo(ChronoUnit.MILLIS);
   }
 }
