@@ -50,12 +50,27 @@ public class SortablePageRequestDto extends PageRequestDto implements SortablePa
 
   @Override
   public Pageable toPageable(Map<String, String> keyMappings) {
-    Sort.Order[] orders = sort.stream()
-        .map(s -> s.toSortOrder(keyMappings))
-        .toArray(Sort.Order[]::new);
+    return org.springframework.data.domain.PageRequest.of(
+        getPage(), getPageSize(), Sort.by(toSortOrders(keyMappings))
+    );
+  }
+
+  @Override
+  public Pageable toPageable(Map<String, String> keyMappings, PageOrder defaultOrder) {
+    Sort.Order[] orders = toSortOrders(keyMappings);
+
+    if (orders.length == 0) {
+      orders = new Sort.Order[]{defaultOrder.toSortOrder(keyMappings)};
+    }
 
     return org.springframework.data.domain.PageRequest.of(
         getPage(), getPageSize(), Sort.by(orders)
     );
+  }
+
+  private Sort.Order[] toSortOrders(Map<String, String> keyMappings) {
+    return sort.stream()
+        .map(s -> s.toSortOrder(keyMappings))
+        .toArray(Sort.Order[]::new);
   }
 }

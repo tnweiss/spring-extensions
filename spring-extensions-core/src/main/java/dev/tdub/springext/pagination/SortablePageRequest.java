@@ -18,4 +18,6 @@ public interface SortablePageRequest extends PageRequest {
   <T> Order[] sort(CriteriaBuilder criteriaBuilder, Function<String, Expression<T>> rootAccessor, Map<String, String> keyMappings);
 
   Pageable toPageable(Map<String, String> keyMappings);
+
+  Pageable toPageable(Map<String, String> keyMappings, PageOrder defaultOrder);
 }
