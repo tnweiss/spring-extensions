@@ -52,6 +52,13 @@ public class SecurityConfig {
         .httpBasic(AbstractHttpConfigurer::disable)
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
+        .cors(c -> c.configurationSource(r -> {
+          var config = new org.springframework.web.cors.CorsConfiguration();
+          config.setAllowedOrigins(List.of("*"));
+          config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+          config.setAllowedHeaders(List.of("*"));
+          return config;
+        }))
         .logout(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(c -> c.anyRequest().permitAll())
         .build();

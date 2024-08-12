@@ -42,11 +42,12 @@ public class AuthFacade {
     log.debug("Authenticating basic credentials {}", () -> json(request));
     AuthenticationClaims authClaims = userAuthService.authenticate(request.getUsername(), request.getPassword())
         .orElseThrow(AuthenticationException::new);
-    Optional<Network> network = networkAuthService.get(remoteAddress);
+    String remoteIp = Optional.ofNullable(headers.get("X-Forwarded-For")).orElse(remoteAddress);
+    Optional<Network> network = networkAuthService.get(remoteIp);
     JwtAuthSession jwtAuthSession = sessionAuthService.create(authClaims.getSub(), network.orElse(null),
-        remoteAddress, headers);
+        remoteIp, headers);
     JwtAuthResponse response = authService.createTokens(jwtAuthSession, authClaims);
-    auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.CREATE, AUDIT_RESOURCE, Map.of("ip", remoteAddress));
+    auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.CREATE, AUDIT_RESOURCE, Map.of("ip", remoteIp));
     log.debug("Success '{}'", () -> json(response));
     return response;
   }
