@@ -60,7 +60,8 @@ public class AuthFacade {
     JwtAuthSession jwtAuthSession = sessionAuthService
         .updateRefreshTokenId(claims.getSessionId(), claims.getRefreshId(), UUID.randomUUID());
     JwtAuthResponse response = authService.createTokens(jwtAuthSession, authClaims);
-    auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.UPDATE, AUDIT_RESOURCE);
+    auditLog.write(jwtAuthSession.toUserPrincipal(), AuditAction.UPDATE, AUDIT_RESOURCE,
+        Map.of("sessionId", jwtAuthSession.getSessionId().toString()));
     log.debug("Updated user {} session {} to {}", claims.getSub(), claims.getSessionId(),
         jwtAuthSession.getSessionId());
     log.debug("Success '{}'", () -> json(response));
@@ -73,7 +74,8 @@ public class AuthFacade {
       throw new ClientException("Invalid Credentials.");
     }
     sessionAuthService.delete(principal.getSessionId());
-    auditLog.write(principal, AuditAction.DELETE, AUDIT_RESOURCE, Map.of("sessionId", principal.getSessionId()));
+    auditLog.write(principal, AuditAction.DELETE, AUDIT_RESOURCE,
+        Map.of("sessionId", principal.getSessionId().toString()));
     log.debug("Success");
   }
 
@@ -86,7 +88,8 @@ public class AuthFacade {
       throw new ClientException("Caller is not authorized to delete session.");
     }
     sessionAuthService.delete(sessionId);
-    auditLog.write(principal, AuditAction.DELETE, AUDIT_RESOURCE, Map.of("sessionId", sessionId));
+    auditLog.write(principal, AuditAction.DELETE, AUDIT_RESOURCE,
+        Map.of("sessionId", sessionId.toString()));
     log.debug("Success");
   }
 
