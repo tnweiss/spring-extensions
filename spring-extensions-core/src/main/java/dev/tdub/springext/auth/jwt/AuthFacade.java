@@ -42,8 +42,7 @@ public class AuthFacade {
     log.debug("Authenticating basic credentials {}", () -> json(request));
     AuthenticationClaims authClaims = userAuthService.authenticate(request.getUsername(), request.getPassword())
         .orElseThrow(AuthenticationException::new);
-    headers.entrySet().forEach(e -> log.debug("Header '{}': '{}'", e::getKey, e::getValue));
-    String remoteIp = Optional.ofNullable(headers.get("X-Forwarded-For")).orElse(remoteAddress);
+    String remoteIp = Optional.ofNullable(headers.get("x-forwarded-for")).orElse(remoteAddress);
     Optional<Network> network = networkAuthService.get(remoteIp);
     JwtAuthSession jwtAuthSession = sessionAuthService.create(authClaims.getSub(), network.orElse(null),
         remoteIp, headers);
