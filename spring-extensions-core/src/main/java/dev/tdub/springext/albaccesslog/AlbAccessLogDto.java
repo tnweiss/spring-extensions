@@ -33,7 +33,6 @@ public class AlbAccessLogDto implements AlbAccessLog {
       Integer targetStatusCode = Objects.equals(tokens.get(9), "-") ? null : Integer.parseInt(tokens.get(9));
 
       String request = Objects.equals(tokens.get(12), "-") ? null : tokens.get(12);
-      String requestMethod = request == null ? null : request.split(" ")[0];
       String requestUrl = request == null ? null : request.split(" ")[1];
 
       return AlbAccessLogDto.builder()
@@ -42,7 +41,7 @@ public class AlbAccessLogDto implements AlbAccessLog {
           .requestProcessingTime(parseFloatMsToIntS(tokens.get(5)))
           .targetProcessingTime(parseFloatMsToIntS(tokens.get(6)))
           .responseProcessingTime(parseFloatMsToIntS(tokens.get(7)))
-          .requestMethod(requestMethod)
+          .requestMethod(requestMethod(request))
           .requestUrl(requestUrl)
           .targetStatusCode(targetStatusCode)
           .fullLog(line)
@@ -62,5 +61,13 @@ public class AlbAccessLogDto implements AlbAccessLog {
 
   private static InetAddress parseIp(String ip) throws UnknownHostException {
     return Objects.equals(ip, "-") ? null : InetAddress.getByName(ip.split(":")[0]);
+  }
+
+  private static String requestMethod(String request) {
+    if (request == null) {
+      return null;
+    }
+    String requestMethodPart = request.split(" ")[0].replace("\"", "");
+    return requestMethodPart.equals("-") ? null : requestMethodPart;
   }
 }
