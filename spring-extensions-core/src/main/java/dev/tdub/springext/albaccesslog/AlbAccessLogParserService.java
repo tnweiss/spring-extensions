@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -40,7 +41,8 @@ public class AlbAccessLogParserService {
   @Scheduled(fixedRateString = "${springext.albaccesslog.parser.interval}")
   public void parse() {
     log.debug("Parsing ALB access logs");
-    try (S3Client client = S3Client.builder().build()) {
+
+    try (S3Client client = S3Client.builder().region(Region.US_EAST_1).build()) {
       for (String key : listFiles(client)) {
         log.trace("Parsing ALB access log: '{}'", key);
         persistence.save(parseFile(client, key));
