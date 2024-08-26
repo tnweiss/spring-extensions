@@ -49,8 +49,8 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
   }
 
-  @ExceptionHandler(value = {ClientException.class})
-  public ResponseEntity<ErrorResponse> handleUnprocessableException(ClientException ex) {
+  @ExceptionHandler(value = {UnprocessableException.class})
+  public ResponseEntity<ErrorResponse> handleUnprocessableException(UnprocessableException ex) {
     log.debug("Client error.", ex);
     return ResponseEntity.status(UNPROCESSABLE_ENTITY)
         .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
