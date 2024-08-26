@@ -49,6 +49,13 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
   }
 
+  @ExceptionHandler(value = {ClientException.class})
+  public ResponseEntity<ErrorResponse> handleUnprocessableException(ClientException ex) {
+    log.debug("Client error.", ex);
+    return ResponseEntity.status(UNPROCESSABLE_ENTITY)
+        .body(new ErrorResponseDto(ex.getMessage(), ridSupplier.get()));
+  }
+
   @ExceptionHandler(value = {InternalServerException.class})
   public ResponseEntity<ErrorResponse> handleInternalServerException(InternalServerException ex) {
     log.error("Server error.", ex);
