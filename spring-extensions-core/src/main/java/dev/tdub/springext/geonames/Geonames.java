@@ -30,6 +30,7 @@ import dev.tdub.springext.geonames.subdivision.Subdivision;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.ClassPathResource;
 
 @Log4j2
 public class Geonames {
@@ -157,10 +158,7 @@ public class Geonames {
   }
 
   private static List<String[]> readTsv(String filepath) {
-    try (InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(filepath)) {
-      if (inputStream == null) {
-        throw new InternalServerException("Failed to load Geonames data from " + filepath + " in classpath");
-      }
+    try (InputStream inputStream = new ClassPathResource(filepath).getInputStream()) {
       Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_16);
       try (CSVReader csv = new CSVReaderBuilder(reader).withCSVParser(csvParser).build()) {
         List<String[]> output = new ArrayList<>();
