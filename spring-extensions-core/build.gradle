@@ -1,13 +1,3 @@
-
-processResources {
-    from('src/main/resources') {
-        include '**/*'
-        into 'META-INF'
-    }
-}
-
-tasks.jar.dependsOn("processResources")
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
